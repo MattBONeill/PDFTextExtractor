@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>PDFExtractor</RootNamespace>
+    <Title>Extract Text form a PDF Document</Title>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PDFsharpNetStandard2" Version="1.51.4845" />
+  </ItemGroup>
+
+</Project>
