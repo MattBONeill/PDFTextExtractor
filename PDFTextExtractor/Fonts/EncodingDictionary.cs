@@ -19,7 +19,7 @@ namespace PDFExtractor.Fonts
 
             if (dictionary.Elements.ContainsKey("/Differences"))
             {
-                Differences.AddRange(ParseDifferences(dictionary.Elements["/Differences"] as PdfArray));
+                Differences.AddRange(ParseDifferences(dictionary.Elements["/Differences"].RemovePDfReference() as PdfArray));
             }
         }
 

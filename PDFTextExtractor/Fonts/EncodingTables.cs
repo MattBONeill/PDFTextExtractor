@@ -307,6 +307,24 @@ namespace PDFExtractor.Fonts
             }
         }
 
+        public static Dictionary<ushort, string> CustomEncoding(EncodingDictionary dict)
+        { 
+            Dictionary<ushort, string> res = new Dictionary<ushort, string>();
+            foreach (var pair in dict.Differences)
+            {
+                ushort index = (ushort)pair.Code;
+                foreach (var name in pair.Names)
+                {
+                    if (name != null)
+                    {
+                        if (ToUnicode.TryGetValue(name, out char c))
+                            res.Add(index, "" + c);
+                    }
+                    index++;
+                }
+            }
+            return res;
+        }
 
         #region Encodings
 

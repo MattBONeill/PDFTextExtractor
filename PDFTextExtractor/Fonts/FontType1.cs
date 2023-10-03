@@ -9,6 +9,8 @@ using System.Text.Json;
 using System.Text;
 using System.Collections.Generic;
 using PdfSharp.Pdf.Advanced;
+using System;
+using System.ComponentModel;
 
 namespace PDFExtractor.Fonts
 {
@@ -141,13 +143,14 @@ namespace PDFExtractor.Fonts
 
         public class CIDFont
         {
-            public string DW {get;set;}
             public string Subtype{get;set;}
             public string CIDSystemInfo{get;set;}
             public string Type{get;set;}
             public string BaseFont{get;set;}
             public FontDescriptor FontDescriptor {get;set;}
-            public string W {get;set;}
+            public double DW { get; set; } = 1000;
+            public Dictionary<int, double> W { get; set; } = new Dictionary<int, double>();
+            //public List<double> W { get; set; } = new List<double>();
             public CIDFont(PdfDictionary dictionary)
             {
 
@@ -155,9 +158,65 @@ namespace PDFExtractor.Fonts
                 {
                     FontDescriptor = new FontDescriptor(dictionary.Elements["/FontDescriptor"].RemovePDfReference() as PdfDictionary);
                 }
+
+                if (dictionary.Elements.ContainsKey("/W"))
+                {
+                    W = ParseW(dictionary.Elements["/W"].RemovePDfReference() as PdfArray);
+                    //var BaseArray = dictionary.Elements["/W"].RemovePDfReference() as PdfArray;
+                    //if (BaseArray.First().ToString() == "0")
+                    //{
+                    //    var WidthArray = BaseArray.Skip(1).First().RemovePDfReference() as PdfArray;
+
+                    //    foreach (var item in WidthArray)
+                    //    {
+                    //        W.Add(item.GetNumber());
+                    //    }
+                          
+                    //}
+                }
+
+                if (dictionary.Elements.ContainsKey("/DW"))
+                {
+                    DW = dictionary.Elements["/DW"].GetNumber();
+                }
+            }
+
+            Dictionary<int, double> ParseW(PdfArray Array)
+            {
+                var ret = new Dictionary<int, double>();
+                int Index = -1;
+                foreach(PdfItem item in Array)
+                {
+                    if (item is PdfArray)
+                    {
+                        if (Index == -1)
+                            throw new Exception("Unable to Parse Font: /W Field of CIDFont is Formated Incorrectly");
+
+                        foreach (var Width in item as PdfArray)
+                        {
+                            ret.Add(Index, Width.GetNumber());
+                            Index++;
+                        }
+                    }
+                    else if (item is PdfNumber || item is PdfInteger)
+                    {
+                        Index = item.GetInt();
+                    }
+                    else 
+                        throw new Exception("Unable to Parse Font: /W Field of CIDFont has Unexpected Value");
+
+                }
+
+
+
+
+                return ret;
             }
 
         }
 
     }
+
+    
+
 }

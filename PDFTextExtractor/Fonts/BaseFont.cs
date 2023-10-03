@@ -70,13 +70,13 @@ namespace PDFExtractor.Fonts
 
             if (dictionary.Elements.ContainsKey("/Encoding"))
             {
-                PdfItem item = dictionary.Elements["/Encoding"];
-                if (item is PdfReference)
+                PdfItem item = dictionary.Elements["/Encoding"].RemovePDfReference();
+                if (item is PdfDictionary)
                 {
                     /*
                      * TODO
                      */
-                    var dict = (item as PdfReference).Value as PdfDictionary;
+                    var dict = item as PdfDictionary;
                     Encoding = new EncodingDictionary(dict);
                     EncodingName = Encoding.BaseEncoding;
                 }
@@ -124,6 +124,10 @@ namespace PDFExtractor.Fonts
                             break;
                     }
                 }
+                else if (Encoding != null)
+                {
+                    toUnicode = EncodingTables.CustomEncoding(Encoding);
+                }
                 else
                 {
                     if ((FontDescriptor?.Flags & Flag_Symbolic) != 0)
@@ -161,15 +165,35 @@ namespace PDFExtractor.Fonts
         public double GetCharacterWidth(char c)
         {
             if (c > LastChar)
-                return FontDescriptor.AvgWidth / 1000;
+            {
+                return GetAverageWidth();
+            }
 
             var index = c - FirstChar;
 
             if (index < 0)
-                return FontDescriptor.AvgWidth / 1000;
+            {
+                return GetAverageWidth();
+            }
 
             return Widths[index] / 1000;//move to glyph space
 
+        }
+
+        private double GetAverageWidth()
+        {
+            if (SubType == PDFSubType.Type0)
+            {
+                var type0 = (FontType0)this;
+                if (type0.CIDSystemInfo.DW == 1000 && type0.CIDSystemInfo.W?.Count != 0)
+                {
+                    return type0.CIDSystemInfo.W.Average(Width => Width.Value) / 1000;
+                }
+                else
+                    return type0.CIDSystemInfo.DW / 1000;
+            }
+            else
+                return FontDescriptor.AvgWidth / 1000;
         }
 
         #region Borrowed Code

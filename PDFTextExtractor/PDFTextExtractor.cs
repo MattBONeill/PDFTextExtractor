@@ -27,7 +27,7 @@ namespace PDFExtractor
         public static IEnumerable<ParsePage> GetParsePages(string file)
         {
             if (!File.Exists(file))
-                throw new FileNotFoundException("PDF file doen't exist", file);
+                throw new FileNotFoundException("PDF file doesn't exist", file);
 
             using var doc = PdfReader.Open(file);
             foreach (var page in doc.Pages)
@@ -131,7 +131,7 @@ namespace PDFExtractor
                         if (Operator.Operands.Count != 2)
                             throw new Exception("Unable To Read Font");
 
-                        //retrive and get current font
+                        //retrieve and get current font
                         string nF = Operator.Operands[0].ToString();
                         pdfState.CurrentFont = fonts[nF];
 
@@ -268,7 +268,7 @@ namespace PDFExtractor
                             if (font.FontDescriptor == null)
                             { 
                             }
-                            fonts.Add(kp.Key, BaseFont.BuildFont(dic));
+                            fonts.Add(kp.Key, font);
                         }
                         else
                             throw new Exception("Unable to Handle Font");

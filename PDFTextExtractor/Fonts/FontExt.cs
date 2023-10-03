@@ -1,11 +1,12 @@
 ﻿using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
+using System.Diagnostics;
 
 namespace PDFExtractor.Fonts
 {
     internal static class FontExt
     {
-
+        [DebuggerStepThrough]
         public static PdfItem RemovePDfReference(this PdfItem item) => item is PdfReference ? (item as PdfReference).Value : item;
 
         public static string GetString(this PdfItem item, bool TrimSlash = true)
