@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /PDFTesting/PDFTesting.csproj
 /PDFTesting
+/PDFTextExtractor/PDFTextExtractor.csproj
