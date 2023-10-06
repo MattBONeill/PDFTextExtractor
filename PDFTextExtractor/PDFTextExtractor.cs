@@ -24,7 +24,7 @@ namespace PDFExtractor
         /// </summary>
         /// <param name="file">a PDF file</param>
         /// <returns></returns>
-        public static IEnumerable<ParsePage> GetParsePages(string file)
+        public static IEnumerable<TextPage> GetParsePages(string file)
         {
             if (!File.Exists(file))
                 throw new FileNotFoundException("PDF file doesn't exist", file);
@@ -39,14 +39,14 @@ namespace PDFExtractor
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        internal static ParsePage GetText(PdfPage page)
+        internal static TextPage GetText(PdfPage page)
         {
             if (page == null)
                 throw new ArgumentNullException(nameof(page));
 
             //Setup save variable
             StringBuilder PDFText = new StringBuilder();
-            TextPage AllLocationText = new TextPage();
+            List<ExtractedText> AllLocationText = new List<ExtractedText>();
             var pdfState = new PDFPageState();
             SizeD size = page.GetSize();
 
@@ -57,6 +57,11 @@ namespace PDFExtractor
             {
                 if (string.IsNullOrEmpty(text))
                     return;
+
+                if (text.StartsWith("DO NOT BREAK DOWN SKID"))
+                { 
+
+                }
 
                 //add string to Text Output
                 PDFText.Append(text);
@@ -79,10 +84,10 @@ namespace PDFExtractor
                 //Log the Location and the string
                 if (afterLoc.X - Loc.X < 0.0009)
                 {//vertical Text
-                    AllLocationText.Add(new ExtractedText(new PDFRectangle(Loc, height, afterLoc.Y - Loc.Y), text));
+                    AllLocationText.Add(new ExtractedText(new PDFRectangle(Loc, height, afterLoc.Y - Loc.Y), size, text));
                 }
                 else
-                    AllLocationText.Add(new ExtractedText(new PDFRectangle(Loc, afterLoc.X - Loc.X, height), text));
+                    AllLocationText.Add(new ExtractedText(new PDFRectangle(Loc, afterLoc.X - Loc.X, height), size, text));
             }
 
             foreach (var Operator in UsableOperators)
@@ -240,7 +245,7 @@ namespace PDFExtractor
                 }
             }
 
-            return new ParsePage(PDFText.ToString(), AllLocationText, size);
+            return new TextPage(PDFText.ToString(), AllLocationText, size);
         }
 
         /// <summary>
@@ -316,6 +321,5 @@ namespace PDFExtractor
             }
         }
     }
-
 
 }

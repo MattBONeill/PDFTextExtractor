@@ -5,14 +5,16 @@ namespace PDFExtractor
 {
     public class ExtractedText
     {
-        public PDFRectangle Bounds { get; }
+        public PDFRectangle PdfBounds { get; }
+        public ScreenRectangle ScreenBounds { get; }
         public string Text { get; }
 
-        public ExtractedText(PDFRectangle bounds, string text)
+        public ExtractedText(PDFRectangle pdfBounds, SizeD PageSize, string text)
         {
-            Bounds = bounds;
+            PdfBounds = pdfBounds;
+            ScreenBounds = new ScreenRectangle(pdfBounds, PageSize);
             Text = text;
         }
-        public override string ToString() => $"Bounds:{Bounds};Text:{Text}";
+        public override string ToString() => $"Bounds:{PdfBounds};Text:{Text}";
     }
 }

@@ -1,22 +1,24 @@
 ﻿using PDFExtractor.Primitives;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PDFExtractor
 {
     /// <summary>
     /// Wraps a TextPage(List of string and Location) and a semi-accurate text output
     /// </summary>
-    public class ParsePage
+    public class TextPage : List<ExtractedText>
     {
         public string PageText { get; }
-        public TextPage TextBlocks { get; }
-        public bool IsEmpty => TextBlocks.Count == 0;
-        public SizeD Size => TextBlocks.Size;
+        public SizeD Size { get; }
 
-        public ParsePage(string pageText, TextPage textBlocks, SizeD size)
+        public bool IsEmpty => Count == 0 && string.IsNullOrWhiteSpace(PageText);
+
+        public TextPage(string pageText, IEnumerable<ExtractedText> textBlocks, SizeD size)
         {
+            AddRange(textBlocks);
             PageText = pageText;
-            TextBlocks = textBlocks;
-            TextBlocks.Size = size;
+            Size = size;
         }
     }
 }

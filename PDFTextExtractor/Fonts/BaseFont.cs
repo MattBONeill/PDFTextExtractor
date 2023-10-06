@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PDFExtractor.Fonts
 {
@@ -178,6 +179,16 @@ namespace PDFExtractor.Fonts
 
             return Widths[index] / 1000;//move to glyph space
 
+        }
+
+        public double GetCharacterHeight(char c)
+        {
+
+            if(FontDescriptor != null && FontDescriptor.XHeight != 0)
+            {
+                return FontDescriptor.XHeight/1000;
+            }
+            return GetCharacterWidth(c);
         }
 
         private double GetAverageWidth()

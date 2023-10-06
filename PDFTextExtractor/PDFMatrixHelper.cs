@@ -36,7 +36,7 @@ namespace PDFExtractor
             return Matrix.GetPointMatrix(tx, 0);
         }
 
-        public static double CalculateStringMaxHeight(string text, PDFPageState pdfState) => text.Max(c => CalculateTextHeight(pdfState.CurrentFont.GetCharacterWidth(c), 0, pdfState.FontSize, pdfState.CharacterSpacing, pdfState.WordSpace));
+        public static double CalculateStringMaxHeight(string text, PDFPageState pdfState) => text.Max(c => CalculateTextHeight(pdfState.CurrentFont.GetCharacterHeight(c), 0, pdfState.FontSize, pdfState.CharacterSpacing, pdfState.WordSpace));
 
         public static double CalculateTextHeight(double w1, double Tj, double Tfs, double Tc, double Tw)
         {

@@ -308,8 +308,8 @@ namespace PDFExtractor.Fonts
         }
 
         public static Dictionary<ushort, string> CustomEncoding(EncodingDictionary dict)
-        { 
-            Dictionary<ushort, string> res = new Dictionary<ushort, string>();
+        {
+            Dictionary<ushort, string> res = Convert(standardEncoding);//new Dictionary<ushort, string>();
             foreach (var pair in dict.Differences)
             {
                 ushort index = (ushort)pair.Code;
@@ -318,12 +318,27 @@ namespace PDFExtractor.Fonts
                     if (name != null)
                     {
                         if (ToUnicode.TryGetValue(name, out char c))
-                            res.Add(index, "" + c);
+                            res[index] = "" + c;
                     }
                     index++;
                 }
             }
             return res;
+            //Dictionary<ushort, string> res = new Dictionary<ushort, string>();
+            //foreach (var pair in dict.Differences)
+            //{
+            //    ushort index = (ushort)pair.Code;
+            //    foreach (var name in pair.Names)
+            //    {
+            //        if (name != null)
+            //        {
+            //            if (ToUnicode.TryGetValue(name, out char c))
+            //                res.Add(index, "" + c);
+            //        }
+            //        index++;
+            //    }
+            //}
+            //return res;
         }
 
         #region Encodings
